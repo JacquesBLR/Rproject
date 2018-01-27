@@ -2,7 +2,7 @@ library(DMwR)
 data(sales)
 #Ajout d'un commentaire
 summary(sales)
-
+Nouveaux changements
 c(nlevels(sales$ID), nlevels(sales$Prod))
 
 length(which(is.na(sales$Quant) & is.na(sales$Val)))
