@@ -1,6 +1,6 @@
 library(DMwR)
 data(sales)
-
+#Ajout d'un commentaire
 summary(sales)
 
 c(nlevels(sales$ID), nlevels(sales$Prod))
