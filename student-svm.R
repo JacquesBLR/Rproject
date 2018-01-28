@@ -6,7 +6,7 @@ library(caret)
 library(data.table)
 
 #SVM for Portuguese test score
-d_portuguese=read.table("svm/student-por.csv",sep=";",header=TRUE)
+d_portuguese=read.table("student-por.csv",sep=";",header=TRUE)
 print(nrow(d_portuguese)) # 382 students
 #summary(d_portuguese)
 
@@ -21,12 +21,13 @@ for (f in nominal_variables){
 
 #BINARY CLASSIFICATION
 d_portuguese_binary = d_portuguese
-#We binarize G3 (G3 = 1 if pupil score > 10, 0 else)
-d_portuguese_binary$G3 <- ifelse(d_portuguese$G3 > 10,1,0)
+#We binarize G3 (G3 = 1 if pupil score > 9, 0 else)
+d_portuguese_binary$G3 <- ifelse(d_portuguese$G3 > 9,1,0)
 #We must factorize G3
 d_portuguese_binary[["G3"]] = factor(d_portuguese_binary[["G3"]])
 #summary(d_portuguese_binary)
 
+#Function to perform SVM on a specific dataset with 10 fold cross validation
 apply_svm = function(dataframe, columns_to_exclude = NULL, log = FALSE){
   #Data partitionning 
   set.seed(3333)
@@ -106,7 +107,7 @@ print(apply_svm(d_portuguese_five, c("G2", "G1")))
 
 
 #SVM for math test score
-d_math=read.table("svm/student-mat.csv",sep=";",header=TRUE)
+d_math=read.table("student-mat.csv",sep=";",header=TRUE)
 print(nrow(d_math)) # 382 students
 #summary(d_math)
 
@@ -121,8 +122,8 @@ for (f in nominal_variables){
 
 #BINARY CLASSIFICATION
 d_math_binary = d_math
-#We binarize G3 (G3 = 1 if pupil score > 10, 0 else)
-d_math_binary$G3 <- ifelse(d_math$G3 > 10,1,0)
+#We binarize G3 (G3 = 1 if pupil score > 9, 0 else)
+d_math_binary$G3 <- ifelse(d_math$G3 > 9,1,0)
 #We must factorize G3
 d_math_binary[["G3"]] = factor(d_math_binary[["G3"]])
 #summary(d_math_binary)
