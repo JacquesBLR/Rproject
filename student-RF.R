@@ -55,21 +55,15 @@ testing <- d_portuguese_binary[-intrain,]
 set.seed(1234)
 
 
-
 test = d_portuguese_binary[colnames(d_portuguese_binary)!="y"]
 test = test[colnames(test)!="y1"]
 
 rf = randomForest(G3 ~ ., ntree = 500, data = test)
 
-
+output = rf$importance
 
 print(rf)
 
-#print(rf$oob.times[1:10])
-
-sort(rf$importance,decreasing = TRUE)
-
-rfpredicted <- predict(rf, newdata=testing[ ,-29])
 
 
 
