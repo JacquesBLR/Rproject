@@ -111,6 +111,8 @@ print(apply_rf(d_portuguese_five, c("y","y1","G2")))
 print(apply_rf(d_portuguese_five, c("y","y1","G2", "G1")))
 
 
+##########################################################################################
+
 #RF for math test score
 d_math=read.table("student-mat.csv",sep=";",header=TRUE)
 print(nrow(d_math)) # 382 students
@@ -167,3 +169,9 @@ print(apply_rf(d_math_five, c("y","y1","G2")))
 
 #SVM pour la classification 5-class des scores en Math : Methode C
 print(apply_rf(d_math_five, c("y","y1","G2", "G1")))
+
+
+sous_ech = T(seq(1:nrow(d_math_five)))
+m=margin(rf)
+print(m[sous_ech]) 
+
