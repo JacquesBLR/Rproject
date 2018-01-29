@@ -6,8 +6,11 @@ library(caret)
 library(data.table)
 
 library(randomForest)
+library(DMwR)
+library(Hmisc)
 
 
+describe(d_portuguese)
 #RF for Portuguese test score
 d_portuguese=read.table("student-por.csv",sep=";",header=TRUE)
 print(nrow(d_portuguese)) # 382 students
@@ -31,7 +34,7 @@ d_portuguese_binary[["G3"]] = factor(d_portuguese_binary[["G3"]])
 #summary(d_portuguese_binary)
 
 #Function to perform RF on a specific dataset with 10 fold cross validation
-apply_rf = function(dataframe, columns_to_exclude = NULL, log = FALSE){
+apply_rf = function(dataframe, columns_to_exclude = NULL, log = FALSE,indice){
   #Data partitionning 
   set.seed(3333)
   #intrain <- createDataPartition(y = dataframe[["G3"]], p= 0.7, list = FALSE)
@@ -63,7 +66,12 @@ apply_rf = function(dataframe, columns_to_exclude = NULL, log = FALSE){
   #             preProcess = c("center", "scale"),
   #             tuneLength = 10)
   
-  rf = randomForest(G3 ~ ., ntree = 500, data = dataframe)
+  stud.rf <<- randomForest(G3 ~ ., ntree = 500, data = dataframe, importance=TRUE)
+  #listvar[indice] <<- stud.rf
+  #imp = stud.rf$importance
+  #plot(stud.rf$err.rate[,1], type="l")
+  
+  #varImpPlot(stud.rf, type = 1)
   
   #test_pred <- predict(svm, newdata = testing)
   #if(log){
@@ -72,17 +80,20 @@ apply_rf = function(dataframe, columns_to_exclude = NULL, log = FALSE){
 #    print(test_pred)
 #  }
   
-  return (rf)
+  return (varImpPlot(stud.rf, type = 1))
 }
 
 #RF pour la classification binaire des scores en Portugais : Methode A
 print(apply_rf(d_portuguese_binary, c("y","y1")))
+stud.rf1 =stud.rf
 
 #RF pour la classification binaire des scores en Portugais : Methode B
 print(apply_rf(d_portuguese_binary, c("y","y1","G2")))
+stud.rf2 =stud.rf
 
 #RF pour la classification binaire des scores en Portugais : Methode C
 print(apply_rf(d_portuguese_binary, c("y","y1","G2", "G1")))
+stud.rf3 =stud.rf
 
 
 
@@ -99,16 +110,19 @@ d_portuguese_five$G3 <- ifelse(d_portuguese$G3 > 15, "A",
 #We must factorize G3
 d_portuguese_five[["G3"]] = factor(d_portuguese_five[["G3"]])
 d_portuguese_five$G3
-summary(d_portuguese_five)
+#summary(d_portuguese_five)
 
 #RF pour la classification 5-class des scores en Portugais : Methode A
 print(apply_rf(d_portuguese_five, c("y","y1")))
+stud.rf4 =stud.rf
 
 #RF pour la classification 5-class des scores en Portugais : Methode B
 print(apply_rf(d_portuguese_five, c("y","y1","G2")))
+stud.rf5 =stud.rf
 
 #RF pour la classification 5-class des scores en Portugais : Methode C
 print(apply_rf(d_portuguese_five, c("y","y1","G2", "G1")))
+stud.rf6 =stud.rf
 
 
 ##########################################################################################
@@ -137,12 +151,15 @@ d_math_binary[["G3"]] = factor(d_math_binary[["G3"]])
 
 #RF pour la classification binaire des scores en Math : Methode A
 print(apply_rf(d_math_binary, c("y","y1")))
+stud.rf7 =stud.rf
 
 #RF pour la classification binaire des scores en Math : Methode B
 print(apply_rf(d_math_binary, c("y","y1","G2")))
+stud.rf8 =stud.rf
 
 #RF pour la classification binaire des scores en Math : Methode C
 print(apply_rf(d_math_binary, c("y","y1","G2", "G1")))
+stud.rf9 =stud.rf
 
 
 
@@ -163,12 +180,15 @@ summary(d_math_five)
 
 #SVM pour la classification 5-class des scores en Math : Methode A
 print(apply_rf(d_math_five, c("y","y1")))
+stud.rf10 =stud.rf
 
 #SVM pour la classification 5-class des scores en Math : Methode B
 print(apply_rf(d_math_five, c("y","y1","G2")))
+stud.rf11 =stud.rf
 
 #SVM pour la classification 5-class des scores en Math : Methode C
 print(apply_rf(d_math_five, c("y","y1","G2", "G1")))
+stud.rf12 =stud.rf
 
 
 sous_ech = T(seq(1:nrow(d_math_five)))
