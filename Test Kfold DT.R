@@ -83,8 +83,8 @@ meanresult = apply(resultats,2,mean)
 
 meanresult
 
-
-
+##############################################################################
+# étapes de sélection du meilleur arbre
 
 #rt.G3Simple <- prune(rt.G3,cp=0.035)
 
