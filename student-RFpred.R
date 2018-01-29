@@ -57,16 +57,23 @@ apply_rf = function(dataframe, columns_to_exclude = NULL, log = FALSE,indice){
     print(dim(dataframe)); 
   }
   
-  #set.seed(2222)
-  #trctrl <- trainControl(method = "repeatedcv", number = 10, repeats = 3)
+
+  intrain <- createDataPartition( dataframe[["G3"]], p= 0.7, list = FALSE)
+  training <- dataframe[intrain,]
+  testing <- dataframe[-intrain,]
   
-  #Apply svm to the train set
-  #svm <- train(G3 ~., data = training, method = "svmLinear",
-  #             trControl=trctrl,
-  #             preProcess = c("center", "scale"),
-  #             tuneLength = 10)
+  #nobs <- nrow(dataframe)
+  #train <- sample(nobs, 0.7*nobs)
   
-  stud.rf <<- randomForest(G3 ~ ., ntree = 500, data = dataframe, importance=TRUE)
+  #data_train <- dataframe[train]
+  #table_test <- dataframe[-train]
+  
+  
+  stud.rf <<- randomForest(G3 ~ ., ntree = 500, data = training, importance=TRUE)
+  
+  testing$predicted <- predict(stud.rf, testing)
+  
+  
   #listvar[indice] <<- stud.rf
   #imp = stud.rf$importance
   #plot(stud.rf$err.rate[,1], type="l")
@@ -80,21 +87,28 @@ apply_rf = function(dataframe, columns_to_exclude = NULL, log = FALSE,indice){
 #    print(test_pred)
 #  }
   
-  return (varImpPlot(stud.rf, type = 1))
+  return (table(testing$predicted, testing$G3))
 }
 
 #RF pour la classification binaire des scores en Portugais : Methode A
 print(apply_rf(d_portuguese_binary, c("y","y1")))
+
 stud.rf1 =stud.rf
+
+
 
 #RF pour la classification binaire des scores en Portugais : Methode B
 print(apply_rf(d_portuguese_binary, c("y","y1","G2")))
 stud.rf2 =stud.rf
+varImpPlot(stud.rf2, type = 1, main="Méthode B")
 
 #RF pour la classification binaire des scores en Portugais : Methode C
 print(apply_rf(d_portuguese_binary, c("y","y1","G2", "G1")))
 stud.rf3 =stud.rf
+varImpPlot(stud.rf3, type = 1, main="Méthode C")
 
+
+par(mfrow = c(1, 3), col="navy", bg="white")
 
 
 #Five level classification
@@ -123,6 +137,7 @@ stud.rf5 =stud.rf
 #RF pour la classification 5-class des scores en Portugais : Methode C
 print(apply_rf(d_portuguese_five, c("y","y1","G2", "G1")))
 stud.rf6 =stud.rf
+
 
 
 ##########################################################################################
@@ -163,6 +178,18 @@ stud.rf9 =stud.rf
 
 
 
+
+par(mfrow = c(2, 3), col="navy", bg="white")
+
+varImpPlot(stud.rf4, type = 1, main="Math Méthode A")
+varImpPlot(stud.rf5, type = 1, main="Math Méthode B")
+varImpPlot(stud.rf6, type = 1, main="Math Méthode C")
+
+varImpPlot(stud.rf1, type = 1, main="Portugais Méthode A")
+varImpPlot(stud.rf2, type = 1, main="Portugais Méthode B")
+varImpPlot(stud.rf3, type = 1, main="Portugais Méthode C")
+
+
 #Five level classification
 #We transform G3 in five classes (G3 = A if G3 > 15, B if G3=14-15, C if G3 = 12-13, D if G3 = 10-11, F if G3 < 10)
 d_math_five = d_math
@@ -182,13 +209,25 @@ summary(d_math_five)
 print(apply_rf(d_math_five, c("y","y1")))
 stud.rf10 =stud.rf
 
+
 #SVM pour la classification 5-class des scores en Math : Methode B
 print(apply_rf(d_math_five, c("y","y1","G2")))
 stud.rf11 =stud.rf
 
+
 #SVM pour la classification 5-class des scores en Math : Methode C
 print(apply_rf(d_math_five, c("y","y1","G2", "G1")))
 stud.rf12 =stud.rf
+
+
+
+
+
+varImpPlot(stud.rf10, type = 1, main="Méthode A")
+varImpPlot(stud.rf11, type = 1, main="Méthode B")
+varImpPlot(stud.rf12, type = 1, main="Méthode C")
+
+par(mfrow = c(1, 3), col="navy", bg="white")
 
 
 sous_ech = T(seq(1:nrow(d_math_five)))
